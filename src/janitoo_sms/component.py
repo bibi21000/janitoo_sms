@@ -64,6 +64,10 @@ class SMSComponent(JNTComponent):
         name = kwargs.pop('name', "Generic sms")
         product_name = kwargs.pop('product_name', "Generic sms")
         hearbeat = kwargs.pop('hearbeat', 900)
+        default_notify = kwargs.pop('default_notify', "That's all folks")
+        default_userid = kwargs.pop('default_userid', "")
+        default_passwd = kwargs.pop('default_passwd', "")
+        default_url = kwargs.pop('default_url', 'https://smsapi.free-mobile.fr/sendmsg')
         bus = kwargs.pop('bus', bus)
         JNTComponent.__init__(self, oid=oid, bus=bus, name=name, hearbeat=hearbeat,
                 product_name=product_name, **kwargs)
@@ -73,7 +77,7 @@ class SMSComponent(JNTComponent):
             node_uuid=self.uuid,
             help='Notify the user',
             label='Notify',
-            default="That's all folks",
+            default=default_notify,
             set_data_cb=self.set_notify,
             cmd_class=COMMAND_NOTIFY,
         )
@@ -82,21 +86,21 @@ class SMSComponent(JNTComponent):
             node_uuid=self.uuid,
             help='The userid from your provider',
             label='Userid',
-            default='',
+            default=default_userid,
         )
         uuid="passwd"
         self.values[uuid] = self.value_factory['config_string'](options=self.options, uuid=uuid,
             node_uuid=self.uuid,
             help='The passwd from your provider',
             label='Pwd',
-            default='',
+            default=default_passwd,
         )
         uuid="url"
         self.values[uuid] = self.value_factory['config_string'](options=self.options, uuid=uuid,
             node_uuid=self.uuid,
             help='The API url of your provider',
             label='Url',
-            default='https://smsapi.free-mobile.fr/sendmsg',
+            default=default_url,
         )
 
     def check_heartbeat(self):
@@ -119,7 +123,7 @@ class FreemobileComponent(SMSComponent):
         name = kwargs.pop('name', "Fee mobile sms")
         product_name = kwargs.pop('product_name', "Free mobile sms")
         SMSComponent.__init__(self, oid=oid, bus=bus, name=name,
-                product_name=product_name, **kwargs)
+                product_name=product_name, default_url='https://smsapi.free-mobile.fr/sendmsg', **kwargs)
 
     def set_notify(self, node_uuid, index, data, **kwargs):
         """Send the notification
